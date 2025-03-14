@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+      - otel-lgtm
+
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
+      POSTGRES_DB: tododb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  otel-lgtm:
+    image: grafana/otel-lgtm:latest
+    ports:
+      - "4317:4317"  # Port for OTLP data ingestion
+      - "3000:3000"  # Grafana UI port
+
+volumes:
+  pgdata:
