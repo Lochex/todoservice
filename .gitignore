@@ -2,6 +2,9 @@ instance/
 
 path/
 
+# Terraform state files
+*.tfstate
+*.tfstate.backup
 infrastructure/terraform/terraform.tfvars
 
 infrastructure/terraform/.terraform/
