@@ -46,7 +46,7 @@ jobs:
 
       # Exit early step (successful exit)
       - name: Exit early after Terraform Plan
-        if: success()
+        if: always()
         run: |
           echo "Exiting early after Terraform plan"
           exit 0
