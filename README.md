@@ -115,7 +115,7 @@ This repository hosts a Python-based To-do service that is auto-instrumented usi
    - The database is restricted by firewall rules (or service endpoints) to allow only traffic from the trusted AKS node subnet.
 
 5. **Monitoring & Visualization:**
-   - Grafana dashboards, accessible through the otel-lgtm service (typically on port 3000), display the telemetry data.
+   - Grafana dashboards, accessible through the otel-collector service (typically on port 3000), display the telemetry data.
    - Dashboards show metrics such as error rates and latency, providing insight into application performance.
 
 ## Running Locally & in Production
@@ -135,4 +135,4 @@ This repository hosts a Python-based To-do service that is auto-instrumented usi
    - Push the image to your Azure Container Registry.
    - Deploy Kubernetes manifests (for the application, Ingress, etc.) to AKS.
 3. **Monitor Telemetry:**
-   - Access Grafana via the otel-lgtm service to view dashboards and monitor telemetry data.
+   - Access Grafana via the otel-collector service to view dashboards and monitor telemetry data.
