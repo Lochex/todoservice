@@ -111,7 +111,7 @@ This repository hosts a Python-based To-do service that is auto-instrumented usi
    - Telemetry data is exported via OTLP to the OpenTelemetry Collector.
    
 4. **Database Connectivity:**
-   - The application connects securely to Azure PostgreSQL using a connection string (e.g., `postgresql://dbadmin%40todo-postgres:YourSecurePassword123!@todo-postgres.postgres.database.azure.com:5432/tododb?sslmode=require`).
+   - The application connects securely to Azure PostgreSQL using a connection string
    - The database is restricted by firewall rules (or service endpoints) to allow only traffic from the trusted AKS node subnet.
 
 5. **Monitoring & Visualization:**
