@@ -18,11 +18,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Azure CLI
-        uses: azure/cli@v1
-        with:
-          azcliversion: '2.42.0'
-
       - name: Azure Login
         run: |
           az login --service-principal \
