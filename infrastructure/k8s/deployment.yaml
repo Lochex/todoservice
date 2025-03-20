@@ -14,19 +14,19 @@ spec:
     spec:
       containers:
       - name: todo-service
-        image: <ACR_LOGIN_SERVER>/todo-app:latest
+        image: todoaksacr.azurecr.io/todo-app:latest
         ports:
         - containerPort: 8000
         env:
         - name: DATABASE_URL
           # Replace <postgres_fqdn> with the FQDN provided by the PostgreSQL resource
-          value: "postgresql://dbadmin:YourSecurePassword123!@<postgres_fqdn>:5432/tododb"
+          value: "postgresql://dbadmin%40todo-postgres:YourSecurePassword123!@todo-postgres.postgres.database.azure.com:5432/tododb?sslmode=require"
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
           # Direct telemetry to the OpenTelemetry collector service deployed below
           value: "http://otel-collector:4317"
         resources:
           requests:
-            memory: "128Mi"
+            memory: "256Mi"
             cpu: "250m"
           limits:
             memory: "256Mi"

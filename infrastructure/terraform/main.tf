@@ -12,16 +12,59 @@ resource "azurerm_resource_group" "rg" {
   location = "East US"
 }
 
-# Create an Azure Container Registry (ACR)
+# Virtual Network
+resource "azurerm_virtual_network" "vnet" {
+  name                = "todo-vnet"
+  address_space       = ["10.111.0.0/16"]
+  location            = azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+# # Public IP for the NAT Gateway
+# resource "azurerm_public_ip" "nat_gateway_ip" {
+#   name                = "aks-nat-ip"
+#   location            = azurerm_resource_group.rg.location
+#   resource_group_name = azurerm_resource_group.rg.name
+#   allocation_method   = "Static"
+#   sku                 = "Standard"
+# }
+
+# # NAT Gateway and associate the public IP
+# resource "azurerm_nat_gateway" "aks_nat_gateway" {
+#   name                = "aks-nat-gateway"
+#   location            = azurerm_resource_group.rg.location
+#   resource_group_name = azurerm_resource_group.rg.name
+#   sku_name            = "Standard"
+# }
+
+# resource "azurerm_nat_gateway_public_ip_association" "example" {
+#   nat_gateway_id       = azurerm_nat_gateway.aks_nat_gateway.id
+#   public_ip_address_id = azurerm_public_ip.nat_gateway_ip.id
+# }
+
+# Subnet for AKS and private endpoints
+resource "azurerm_subnet" "subnet" {
+  name                 = "todo-subnet"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = ["10.111.1.0/24"]
+  service_endpoints    = ["Microsoft.Sql"]
+}
+
+# resource "azurerm_subnet_nat_gateway_association" "example" {
+#   subnet_id      = azurerm_subnet.subnet.id
+#   nat_gateway_id = azurerm_nat_gateway.aks_nat_gateway.id
+# }
+
+# Azure Container Registry (ACR)
 resource "azurerm_container_registry" "acr" {
   name                = "todoaksacr"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  sku                 = "Basic"
-  admin_enabled       = true
+  sku                 = "Premium"
 }
 
-# Create an AKS Cluster with a single, small node to minimize cost
+# AKS Cluster with a single, small node
 resource "azurerm_kubernetes_cluster" "aks" {
   name                = "todo-aks-cluster"
   location            = azurerm_resource_group.rg.location
@@ -31,7 +74,8 @@ resource "azurerm_kubernetes_cluster" "aks" {
   default_node_pool {
     name       = "default"
     node_count = 1
-    vm_size    = "Standard_B2s"  # A low‑cost option; you may consider "Standard_B1ms" if available
+    vm_size    = "Standard_B2s" 
+    vnet_subnet_id = azurerm_subnet.subnet.id
   }
 
   identity {
@@ -47,7 +91,7 @@ resource "azurerm_postgresql_server" "db" {
   administrator_login          = "dbadmin"
   administrator_login_password = "YourSecurePassword123!"
   version                      = "11"
-  sku_name                     = "B_Gen5_1"       # A basic SKU for single-server; adjust as needed.
+  sku_name                     = "GP_Gen5_2"       # A basic SKU for single-server; adjust as needed.
   storage_mb                   = 5120             # Minimum storage for demo purposes.
   backup_retention_days        = 7
   geo_redundant_backup_enabled = false
@@ -60,5 +104,49 @@ resource "azurerm_postgresql_database" "tododb" {
   resource_group_name = azurerm_resource_group.rg.name
   server_name         = azurerm_postgresql_server.db.name
   charset             = "UTF8"
-  collation           = "en_US.utf8"
+  collation           = "English_United States.1252"
 }
+
+# Firewall rule to allow traffic from the AKS subnet
+resource "azurerm_postgresql_firewall_rule" "allow_aks" {
+  name                = "AllowAKSSubnet"
+  resource_group_name = azurerm_resource_group.rg.name
+  server_name         = azurerm_postgresql_server.db.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
+}
+
+# # Private DNS Zone for PostgreSQL
+# resource "azurerm_private_dns_zone" "postgres_dns_zone" {
+#   name                = "privatelink.postgres.database.azure.com"
+#   resource_group_name = azurerm_resource_group.rg.name
+# }
+
+# # Link the VNet to the Private DNS Zone
+# resource "azurerm_private_dns_zone_virtual_network_link" "postgres_dns_link" {
+#   name                  = "todo-postgres-dns-link"
+#   resource_group_name   = azurerm_resource_group.rg.name
+#   private_dns_zone_name = azurerm_private_dns_zone.postgres_dns_zone.name
+#   virtual_network_id    = azurerm_virtual_network.vnet.id
+#   registration_enabled  = true
+# }
+
+# # Private Endpoint for PostgreSQL
+# resource "azurerm_private_endpoint" "postgres_private_endpoint" {
+#   name                = "todo-postgres-pe"
+#   location            = azurerm_resource_group.rg.location
+#   resource_group_name = azurerm_resource_group.rg.name
+#   subnet_id           = azurerm_subnet.subnet.id
+
+#   private_service_connection {
+#     name                           = "todo-postgres-psc"
+#     private_connection_resource_id = azurerm_postgresql_server.db.id
+#     is_manual_connection           = false
+#     # The subresource name for PostgreSQL Single Server is often "postgresqlServer"
+#     subresource_names              = ["postgresqlServer"]
+#   }
+#   private_dns_zone_group {
+#     name                 = "postgresql-dns-zone-group"
+#     private_dns_zone_ids = [azurerm_private_dns_zone.postgres_dns_zone.id]
+#   }
+# }

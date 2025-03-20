@@ -2,7 +2,12 @@ version: "3.8"
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+    image: todoaksacr.azurecr.io/todo-app:latest
     ports:
       - "8082:8082"
     depends_on:
@@ -12,8 +17,8 @@ services:
   postgres:
     image: postgres:13
     environment:
-      POSTGRES_USER: dbuser
-      POSTGRES_PASSWORD: dbpassword
+      POSTGRES_USER: dbadmin
+      POSTGRES_PASSWORD: YourSecurePassword123!
       POSTGRES_DB: tododb
     ports:
       - "5432:5432"

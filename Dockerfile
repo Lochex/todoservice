@@ -6,9 +6,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
 # Set the environment variables which the app expects
-ENV APP_DATABASE_URL="postgresql://dbuser:dbpassword@postgres:5432/tododb" \
-    OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-lgtm:4317" \
-    OTEL_TRACES_EXPORTER=none
+ENV APP_DATABASE_URL="postgresql://dbadmin%40todo-postgres:YourSecurePassword123!@todo-postgres.postgres.database.azure.com:5432/tododb?sslmode=require" \
+    OTEL_EXPORTER_OTLP_ENDPOINT="http://otel-lgtm:4318" \
+    ENABLE_LOGS_ALL=true \
+    OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true \
+    OTEL_METRICS_EXPORTER=otlp \
+    OTEL_TRACES_EXPORTER=otlp
 
 # Set the working directory
 WORKDIR /app

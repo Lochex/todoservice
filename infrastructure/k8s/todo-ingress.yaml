@@ -2,11 +2,10 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: todo-ingress
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
 spec:
+  ingressClassName: traefik
   rules:
-  - host: todo.example.com   # Replace with your domain or use a placeholder like localhost if using /etc/hosts for testing
+  - host: test.example.com  # Replace with your domain or use a placeholder like localhost if using /etc/hosts for testing
     http:
       paths:
       - path: /

@@ -39,6 +39,10 @@ class TodoSchema(Schema):
 
 @app.route("/todos", methods=["GET"])
 def get_todos():
+    # Check for a query parameter to simulate a 500 error
+    if request.args.get("simulate_error") == "500":
+        logger.error("Simulating a 500 error")
+        raise Exception("Simulated server error")
     try:
         logger.info(f"Fetching all todos")
         todos = Todo.query.all()
