@@ -136,14 +136,3 @@ This repository hosts a Python-based To-do service that is auto-instrumented usi
    - Deploy Kubernetes manifests (for the application, Ingress, etc.) to AKS.
 3. **Monitor Telemetry:**
    - Access Grafana via the otel-lgtm service to view dashboards and monitor telemetry data.
-
-## Further Reading
-
-- [OpenTelemetry for Python](https://opentelemetry.io/docs/languages/python/)
-- [Azure Database for PostgreSQL Documentation](https://docs.microsoft.com/en-us/azure/postgresql/)
-- [AKS Documentation](https://docs.microsoft.com/en-us/azure/aks/)
-- [Grafana/otel-lgtm GitHub Repository](https://github.com/grafana/docker-otel-lgtm)
-
----
-
-This README provides a high-level overview of your architecture and details how components interact within your environment. Adjust the details as necessary to match your exact setup and configuration.
