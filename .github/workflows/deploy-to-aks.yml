@@ -4,9 +4,10 @@ on:
   push:
     branches:
       - feat/add-infrastructure
+  workflow_dispatch: # <-- Allows manual trigger
 
 jobs:
-  deploy:
+  terraform-deploy:
     runs-on: ubuntu-latest
 
     env:
@@ -44,11 +45,16 @@ jobs:
           terraform plan -out=tfplan
           # terraform apply -auto-approve tfplan
 
-      # Exit early step (successful exit)
-      - name: Exit early after Terraform Plan
-        run: |
-          echo "Exiting early after Terraform plan"
-          exit 0
+  deploy-app:
+    needs: terraform-deploy
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      # Manual step for `terraform apply`
+      # - name: Terraform Apply
+      #   working-directory: infrastructure/terraform
+      #   run: terraform apply -auto-approve
 
       - name: Get AKS Credentials
         run: |
