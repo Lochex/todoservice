@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # <-- Allows manual trigger
 
 jobs:
-  terraform-deploy:
+  infra-setup:
     runs-on: ubuntu-latest
 
     env:
@@ -46,7 +46,7 @@ jobs:
           # terraform apply -auto-approve tfplan
 
   deploy-app:
-    needs: terraform-deploy
+    needs: infra-setup
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
