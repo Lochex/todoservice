@@ -8,7 +8,7 @@ provider "azurerm" {
 
 # Create a Resource Group
 resource "azurerm_resource_group" "rg" {
-  name     = "todo-aks-rg"
+  name     = var.resource_group_name
   location = "East US"
 }
 
@@ -58,7 +58,7 @@ resource "azurerm_subnet" "subnet" {
 
 # Azure Container Registry (ACR)
 resource "azurerm_container_registry" "acr" {
-  name                = "todoaksacr"
+  name                = var.acr_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   sku                 = "Premium"
@@ -66,7 +66,7 @@ resource "azurerm_container_registry" "acr" {
 
 # AKS Cluster with a single, small node
 resource "azurerm_kubernetes_cluster" "aks" {
-  name                = "todo-aks-cluster"
+  name                = var.aks_cluster_name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   dns_prefix          = "todoaks"

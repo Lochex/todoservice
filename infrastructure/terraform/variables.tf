@@ -18,3 +18,18 @@ variable "client_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "resource_group_name" {
+  type    = string
+  default = "todo-aks-rg"
+}
+
+variable "aks_cluster_name" {
+  type    = string
+  default = "todo-aks-cluster"
+}
+
+variable "acr_name" {
+  type    = string
+  default = "todoaksacr"
+}
