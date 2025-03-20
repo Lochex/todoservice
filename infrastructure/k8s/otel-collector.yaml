@@ -18,15 +18,13 @@ spec:
         env:
         - name: ENABLED_LOGS_ALL
           value: "true"
-        # - name: OTEL_EXPORTER_OTLP_ENDPOINT
-        #   value: "0.0.0.0:4318"
         ports:
         - containerPort: 4318  # Port for OTLP (OpenTelemetry Protocol)
         - containerPort: 4317
         - containerPort: 3000  # Grafana UI
         resources:
           requests:
-            memory: "128Mi"
+            memory: "256Mi"
             cpu: "250m"
           limits:
             memory: "256Mi"

@@ -3,7 +3,7 @@ name: Deploy to AKS
 on:
   push:
     branches:
-      - main
+      - feat/add-infrastructure
 
 jobs:
   deploy:
@@ -35,17 +35,18 @@ jobs:
         run: |
           terraform init
           terraform plan -out=tfplan
-          terraform apply -auto-approve tfplan
+          # terraform apply -auto-approve tfplan
+
+      # Exit early step (successful exit)
+      - name: Exit early after Terraform Plan
+        if: success()
+        run: |
+          echo "Exiting early after Terraform plan"
+          exit 0
 
       - name: Get AKS Credentials
         run: |
           az aks get-credentials --resource-group $RESOURCE_GROUP --name $AKS_CLUSTER --overwrite-existing
-      
-      - name: Deploy Traefik Ingress Controller via Helm
-        run: |
-          helm repo add traefik https://traefik.github.io/helm-charts
-          helm repo update
-          helm install traefik traefik/traefik --namespace traefik --create-namespace
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -58,6 +59,12 @@ jobs:
         run: |
           docker compose build
           docker compose push
+      
+      - name: Deploy Traefik Ingress Controller via Helm
+        run: |
+          helm repo add traefik https://traefik.github.io/helm-charts
+          helm repo update
+          helm install traefik traefik/traefik --namespace traefik --create-namespace
 
       - name: Deploy Application to AKS using kubectl
         working-directory: infrastructure/terraform

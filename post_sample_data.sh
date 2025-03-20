@@ -2,10 +2,10 @@
 
 set -euo pipefail
 
-APPLICATION_HOST="http://localhost"
+APPLICATION_HOST="http://test.example.com"
 APPLICATION_PORT=8082
 
-DEST="${APPLICATION_HOST}:${APPLICATION_PORT}"
+DEST="${APPLICATION_HOST}"
 
 ID01=$(curl -X POST -H "content-type: application/json" --data "{ \"title\": \"Fuel car\"                                                                                               }" ${DEST}/todos | jq ".id")
 ID02=$(curl -X POST -H "content-type: application/json" --data "{ \"title\": \"Buy milk\",                          \"description\": \"2 Litres\",              \"depends_on\": ${ID01} }" ${DEST}/todos | jq ".id")
