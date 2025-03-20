@@ -25,6 +25,12 @@ jobs:
             --password ${{ secrets.ARM_CLIENT_SECRET }} \
             --tenant ${{ secrets.ARM_TENANT_ID }}
 
+      # Step 3: Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.7.5
+
       - name: Provision Infrastructure with Terraform
         working-directory: infrastructure/terraform
         run: |
