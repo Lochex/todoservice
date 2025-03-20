@@ -33,6 +33,12 @@ jobs:
 
       - name: Provision Infrastructure with Terraform
         working-directory: infrastructure/terraform
+        env:
+          TF_VAR_client_id: ${{ secrets.TF_VAR_client_id }}
+          TF_VAR_client_secret: ${{ secrets.TF_VAR_client_secret }}
+          TF_VAR_subscription_id: ${{ secrets.TF_VAR_subscription_id }}
+          TF_VAR_tenant_id: ${{ secrets.TF_VAR_tenant_id }}
+          TF_VAR_location: ${{ secrets.TF_VAR_location }}
         run: |
           terraform init
           terraform plan -out=tfplan
